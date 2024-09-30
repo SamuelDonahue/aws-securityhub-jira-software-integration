@@ -37,6 +37,9 @@ Parameters:
   JIRAIssueType:
     Description: JIRA Issue Type
     Type: String
+  SecurityContact:
+    Description: security contact to assign ticket to
+    Type: String
 
 Resources:
   LambdaImportRole:
@@ -182,6 +185,7 @@ Resources:
           JIRA_ISSUETYPE: !Ref JIRAIssueType
           JIRA_PROJECT_KEY: !Ref JIRAProjectKey
           JIRA_INSTANCE: !Ref JIRAInstance
+          SECURITY_CONTACT: !Ref SecurityContact
 
   RefreshJIRASecHubCWRule:
     Type: AWS::Events::Rule
@@ -225,6 +229,7 @@ Resources:
           JIRA_INSTANCE: !Ref JIRAInstance
           JIRA_ISSUETYPE: !Ref JIRAIssueType
           JIRA_PROJECT_KEY: !Ref JIRAProjectKey
+          SECURITY_CONTACT: !Ref SecurityContact
 
   AlarmSNSTopic:
     Type: AWS::SNS::Topic

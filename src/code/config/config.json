@@ -1,7 +1,7 @@
 {
     "Controls" : {
-        "eu-west-1": [
-         "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0/rule/1.22"
+        "us-east-2": [
+         "arn:aws:guardduty:us-east-2:383439373719:detector/fec917bd748d60529d8f7bd7806a2eae"
      ],
         "default": [
      ]

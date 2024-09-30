@@ -34,6 +34,8 @@ def finding_parser(finding):
 
 
 def create_jira(jira_client, project_key, issuetype_name, product_arn, account, region, description, resources, severity, title, id):
+    
+    assignee = os.environ.get("SECURITY_CONTACT")
 
     resources = "Resources: %s" % resources if not "default" in product_arn else ""
 
@@ -41,7 +43,7 @@ def create_jira(jira_client, project_key, issuetype_name, product_arn, account, 
         jira_client, project_key, issuetype_name, account, region, description, resources, severity, title, id)
     utils.update_securityhub(
         securityhub, id, product_arn, "NOTIFIED", 'JIRA Ticket: {0}'.format(new_issue))
-    utils.update_jira_assignee(jira_client, new_issue, account)
+    utils.update_jira_assignee(jira_client, new_issue, account, assignee)
 
 
 def is_automated_check(finding):

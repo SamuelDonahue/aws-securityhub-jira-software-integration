@@ -66,7 +66,7 @@ def update_unassigned_ticket(jira_client, issue, message):
     issue.update(fields={"labels": issue.fields.labels})
     jira_client.add_comment(issue, message)
 
-
+'''
 def get_account_organization_tags(account):
     org_id = os.environ.get("ORG_ACCOUNT_ID")
     org_role = os.environ.get("ORG_ROLE")
@@ -77,28 +77,18 @@ def get_account_organization_tags(account):
         tags = org_client.list_tags_for_resource(ResourceId=account)
         return tags
     return {}
-    
+'''    
 # assign ticket based on Organization account
 
 
-def update_jira_assignee(jira_client, issue, account):
-    tags = get_account_organization_tags(account)
-    merged_tags = {}
-    for tag in tags['Tags']:
-        merged_tags[tag['Key']] = tag['Value']
-    if merged_tags.get("SecurityContactID"):
-        assignee = merged_tags.get("SecurityContactID")
-        try:
-            jira_client.assign_issue(issue, assignee)
-        except JIRAError:
-            logger.warning("User {0} couldn't be assigned to {1}".format(
-                assignee, jira_client))
-            message = "Security responsible not in JIRA\n Id: {0}".format(
-                assignee)
-            update_unassigned_ticket(jira_client, issue, message)
-    else:
-        logger.info("Account owner could not be identified {0} - {1}".format(account,issue))
-        message = "Account owner could not be identified"
+def update_jira_assignee(jira_client, issue, account, assignee):
+    try:
+        jira_client.assign_issue(issue, assignee)
+    except JIRAError:
+        logger.warning("User {0} couldn't be assigned to {1}".format(
+            assignee, jira_client))
+        message = "Security responsible not in JIRA\n Id: {0}".format(
+            assignee)
         update_unassigned_ticket(jira_client, issue, message)
 
 
@@ -198,15 +188,15 @@ def update_securityhub(securityhub_client, id, product_arn, status, note):
 
 
 def is_closed(jira_client, issue):
-    return issue.fields.status.name == "Resolved"
+    return issue.fields.status.name.casefold() == "Resolved"
 
 
 def is_suppressed(jira_client, issue):
-    return issue.fields.status.name == "Risk approved" or issue.fields.status.name == "Accepted false positive"
+    return issue.fields.status.name.casefold() == "Risk approved" or issue.fields.status.name.casefild() == "Accepted false positive"
 
 
 def is_test_fix(jira_client, issue):
-    return issue.fields.status.name == "Test fix"
+    return issue.fields.status.name.casefold() == "Test fix"
 
 
 def reopen_jira_issue(jira_client, issue):
